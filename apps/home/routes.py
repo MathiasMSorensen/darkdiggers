@@ -5,19 +5,28 @@ Copyright (c) 2019 - present AppSeed.us
 
 from apps.home import blueprint
 from flask import render_template, request
-from flask_login import login_required
+# from flask_login import login_required
 from jinja2 import TemplateNotFound
+from utils.azure_data_utils.azure_table_utils import get_dasboard_data
 
 
+table_name = "czlhjpfh3vckarxvmaa8"
+# @login_required
 @blueprint.route('/index')
-@login_required
 def index():
+    preds_labels, preds, writeback_labels,\
+    writeback, total_predictions, total_writebacks, \
+    accurazy_labels, accurazy, last_call, last_writeback, total_accurazy = get_dasboard_data(table_name)
 
-    return render_template('home/index.html', segment='index')
+    return render_template('home/index.html', 
+                            preds_labels = preds_labels, preds = preds, writeback_labels = writeback_labels,
+                            writeback = writeback, total_predictions = total_predictions, total_writebacks = total_writebacks, 
+                            accurazy_labels = accurazy_labels, accurazy = accurazy, last_call = last_call, last_writeback =last_writeback,
+                            total_accurazy = total_accurazy, 
+                            segment='index')
 
 
 @blueprint.route('/<template>')
-@login_required
 def route_template(template):
 
     try:

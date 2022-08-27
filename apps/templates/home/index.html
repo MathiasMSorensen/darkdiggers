@@ -16,9 +16,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Money</p>
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total calls</p>
                     <h5 class="font-weight-bolder mb-0">
-                      $53,000
+                      {{ total_predictions }}
                       <span class="text-success text-sm font-weight-bolder">+55%</span>
                     </h5>
                   </div>
@@ -38,9 +38,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Users</p>
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total writebacks</p>
                     <h5 class="font-weight-bolder mb-0">
-                      2,300
+                      {{ total_writebacks }}
                       <span class="text-success text-sm font-weight-bolder">+3%</span>
                     </h5>
                   </div>
@@ -60,9 +60,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">New Clients</p>
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Average accuracy</p>
                     <h5 class="font-weight-bolder mb-0">
-                      +3,462
+                      {{total_accurazy}}%
                       <span class="text-danger text-sm font-weight-bolder">-2%</span>
                     </h5>
                   </div>
@@ -82,9 +82,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Sales</p>
+                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Date of last call</p>
                     <h5 class="font-weight-bolder mb-0">
-                      $103,430
+                      {{ last_call }}
                       <span class="text-success text-sm font-weight-bolder">+5%</span>
                     </h5>
                   </div>
@@ -154,8 +154,8 @@
                   <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
                 </div>
               </div>
-              <h6 class="ms-2 mt-4 mb-0"> Active Users </h6>
-              <p class="text-sm ms-2"> (<span class="font-weight-bolder">+23%</span>) than last week </p>
+              <h6 class="ms-2 mt-4 mb-0"> Average prediction Accuracy </h6>
+              <p class="text-sm ms-2"> (<span class="font-weight-bolder">+{{total_accurazy}}%</span>) overall </p>
               <div class="container border-radius-lg">
                 <div class="row">
                   <div class="col-3 py-3 ps-0">
@@ -265,7 +265,7 @@
         <div class="col-lg-7">
           <div class="card z-index-2">
             <div class="card-header pb-0">
-              <h6>Sales overview</h6>
+              <h6>API utilization</h6>
               <p class="text-sm">
                 <i class="fa fa-arrow-up text-success"></i>
                 <span class="font-weight-bold">4% more</span> in 2021
@@ -642,15 +642,23 @@
     new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: [        
+        {% for label in accurazy_labels %}
+          "{{ label | safe }}",
+        {% endfor %}
+        ],
         datasets: [{
-          label: "Sales",
+          label: "Average prediction Accuracy",
           tension: 0.4,
           borderWidth: 0,
           borderRadius: 4,
           borderSkipped: false,
           backgroundColor: "#fff",
-          data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
+          data: [
+          {% for acc in accurazy %}
+            {{ acc | safe }},  
+          {% endfor %}
+          ],
           maxBarThickness: 6
         }, ],
       },
@@ -676,7 +684,7 @@
             },
             ticks: {
               suggestedMin: 0,
-              suggestedMax: 500,
+              suggestedMax: 1,
               beginAtZero: true,
               padding: 15,
               font: {
@@ -721,9 +729,13 @@
     new Chart(ctx2, {
       type: "line",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: [
+        {% for label in preds_labels %}
+          "{{ label | safe }}",
+        {% endfor %}
+        ],
         datasets: [{
-            label: "Mobile apps",
+            label: "Predictions",
             tension: 0.4,
             borderWidth: 0,
             pointRadius: 0,
@@ -731,12 +743,16 @@
             borderWidth: 3,
             backgroundColor: gradientStroke1,
             fill: true,
-            data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+            data: [
+            {% for prediction in preds %}
+              {{ prediction | safe }},  
+            {% endfor %}
+            ],
             maxBarThickness: 6
 
           },
           {
-            label: "Websites",
+            label: "Writebacks",
             tension: 0.4,
             borderWidth: 0,
             pointRadius: 0,
@@ -744,7 +760,11 @@
             borderWidth: 3,
             backgroundColor: gradientStroke2,
             fill: true,
-            data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+            data: [
+            {% for writebacks in writeback %}
+              {{ writebacks | safe }},  
+            {% endfor %}
+            ],
             maxBarThickness: 6
           },
         ],

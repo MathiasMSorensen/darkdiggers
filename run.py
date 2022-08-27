@@ -9,7 +9,8 @@ from   flask_minify  import Minify
 from   sys import exit
 
 from apps.config import config_dict
-from apps import create_app, db
+# from apps import create_app, db
+from apps import create_app
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
@@ -21,12 +22,13 @@ try:
 
     # Load the configuration using the default values
     app_config = config_dict[get_config_mode.capitalize()]
-
+    print(app_config)
 except KeyError:
     exit('Error: Invalid <config_mode>. Expected values [Debug, Production] ')
 
+
 app = create_app(app_config)
-Migrate(app, db)
+# Migrate(app, db)
 
 if not DEBUG:
     Minify(app=app, html=True, js=False, cssless=False)
