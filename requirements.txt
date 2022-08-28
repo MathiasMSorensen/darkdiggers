@@ -14,3 +14,5 @@ python-dotenv==0.19.2
 Flask-Minify==0.37
 azure.data.tables
 pandas
+WTForms==2.3.3
+wtforms-validators==1.0.0

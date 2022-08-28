@@ -8,9 +8,17 @@ from flask import render_template, request
 # from flask_login import login_required
 from jinja2 import TemplateNotFound
 from utils.azure_data_utils.azure_table_utils import get_dasboard_data
-
+from wtforms import SelectField, StringField, PasswordField, BooleanField, IntegerField, validators
+from wtforms.validators import InputRequired , Email, Length, NumberRange
+from flask_wtf import FlaskForm
 
 table_name = "czlhjpfh3vckarxvmaa8"
+
+class Form(FlaskForm):
+    Budget = IntegerField('How Many?', 
+                          validators=[NumberRange(min=0, max=150, message='bla')],
+                          )
+
 # @login_required
 @blueprint.route('/index')
 def index():
@@ -24,6 +32,14 @@ def index():
                             accurazy_labels = accurazy_labels, accurazy = accurazy, last_call = last_call, last_writeback =last_writeback,
                             total_accurazy = total_accurazy, 
                             segment='index')
+
+
+@blueprint.route('tables')
+def tables():
+    form = Form()
+
+    return render_template("home/tables.html", form=form, segment='tables')
+
 
 
 @blueprint.route('/<template>')
